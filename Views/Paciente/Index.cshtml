@@ -23,7 +23,9 @@
 
 <script>
     function Limpar() {
-        $('#textopesquisa').val('');
+        $('#textopesquisa').val(''); 
+        Pesquisar();
+        recarregarPagina();
     }
 
     //limpar textopesquisa ao recarregar a página
@@ -33,8 +35,9 @@
 
     function Pesquisar() {
         var result = $('#textopesquisa').val();
+        var idClinica = $('#idClinica').val();
         var url = "/Paciente/ListaPartialView";
-        var parametros = { nome: result };
+        var parametros = { nome: result, idClinica : idClinica };
         $.get(url, parametros)
             .done(function (data) {
                 $('#divpartial').html(data);

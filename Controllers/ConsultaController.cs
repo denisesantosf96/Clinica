@@ -19,18 +19,19 @@ namespace Clinica.Controllers
             _context = context;
         }
         
-        public IActionResult Index(int? pagina)
+        [HttpGet]
+        public IActionResult Index(int? pagina, string nome)
         {
             
-            var idClinica = 1;          
+            var idClinica = 1;
             int numeroPagina = (pagina ?? 1);
-            
 
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@idClinica", idClinica),
+                new SqlParameter("@nome", nome ?? string.Empty) 
             };
             List<Consulta> consultas = _context.RetornarLista<Consulta>("sp_consultarConsulta", parametros);
-            
+
             ViewBagClinicas();
             return View(consultas.ToPagedList(numeroPagina, itensPorPagina));
         }
@@ -95,16 +96,16 @@ namespace Clinica.Controllers
             return new JsonResult(new {Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
         }
 
-        public PartialViewResult ListaPartialView(int idClinica){
+        public PartialViewResult ListaPartialView(int idClinica, string nome){
             
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@idClinica", idClinica)                
+                new SqlParameter("@idClinica", idClinica),
+                new SqlParameter("@nome", nome ?? string.Empty)   
             };
             List<Consulta> consultas = _context.RetornarLista<Consulta>("sp_consultarConsulta", parametros);
-            
-            
-            HttpContext.Session.SetInt32("IdClinica", idClinica);
-            
+
+            HttpContext.Session.SetInt32("@IdClinica", idClinica);
+
             return PartialView(consultas.ToPagedList(1, itensPorPagina));
         }
 
