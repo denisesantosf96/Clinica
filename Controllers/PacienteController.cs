@@ -1,5 +1,6 @@
 
 using System.Data.SqlClient;
+using System.Diagnostics;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,24 +20,24 @@ namespace Clinica.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int? pagina, string nome)
+        public IActionResult Index(int? pagina)
         {
 
-            var idClinica = 1;
+            var nome = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty; // Define como string vazia se nulo
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", nome ?? string.Empty),
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
             };
             List<Paciente> pacientes = _context.RetornarLista<Paciente>("sp_consultarPaciente", parametros);
 
+            
             ViewBagClinicas();
             return View(pacientes.ToPagedList(numeroPagina, itensPorPagina));
         }
 
         [HttpGet]
-        public IActionResult Detalhe(int id, int idClinica, string nome = "")
+        public IActionResult Detalhe(int id, int idClinica)
         {
             Models.Paciente paciente = new Models.Paciente();
             if (id > 0)
@@ -46,12 +47,13 @@ namespace Clinica.Controllers
             };
                 paciente = _context.ListarObjeto<Models.Paciente>("sp_buscarPacientePorId", parametros);
             }
-            else
+            else 
             {
                 paciente.IdClinica = idClinica;
             }
+            
 
-            ViewBagConsultas(paciente.IdClinica > 0 ? paciente.IdClinica : idClinica, nome);
+            ViewBagConsultas(id > 0 ? paciente.IdClinica : idClinica);
             return View(paciente);
         }
 
@@ -137,17 +139,8 @@ namespace Clinica.Controllers
                 }
             }
 
-            /*if (paciente.IdClinica > 0)
-            {
-                ViewBagConsultas(paciente.IdClinica, "");
-            }
-            else
-            {
-                // Definir um comportamento padrão, se necessário, quando IdClinica for inválido
-                ModelState.AddModelError("", "Clínica inválida ou não definida.");
-            }*/
+            ViewBagConsultas(paciente.IdClinica);
 
-            ViewBagConsultas(paciente.IdClinica, "");
             return View(paciente);
         }
 
@@ -162,15 +155,18 @@ namespace Clinica.Controllers
             return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
         }
 
-        public PartialViewResult ListaPartialView(string nome, int idClinica)
+        public PartialViewResult ListaPartialView(string nome)
         {
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", nome ?? string.Empty),
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
             };
             List<Models.Paciente> pacientes = _context.RetornarLista<Models.Paciente>("sp_consultarPaciente", parametros);
 
-            HttpContext.Session.SetInt32("@IdClinica", idClinica);
+            if (string.IsNullOrEmpty(nome)){
+                HttpContext.Session.Remove("TextoPesquisa");
+            } else {
+            HttpContext.Session.SetString("TextoPesquisa", nome);
+            }
 
             return PartialView(pacientes.ToPagedList(1, itensPorPagina));
         }
@@ -190,11 +186,10 @@ namespace Clinica.Controllers
             }).ToList();
         }
 
-        private void ViewBagConsultas(int idClinica, string nome)
+        private void ViewBagConsultas(int idClinica)
         {
             SqlParameter[] param = new SqlParameter[]{
-                new SqlParameter("@idClinica", idClinica),
-                new SqlParameter("@nome", nome ?? string.Empty)
+                new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Consulta> consultas = new List<Models.Consulta>();
             consultas = _context.RetornarLista<Models.Consulta>("sp_consultarConsulta", param);
@@ -205,7 +200,6 @@ namespace Clinica.Controllers
                 Value = c.Id.ToString()
             }).ToList();
         }
-
 
     }
 }

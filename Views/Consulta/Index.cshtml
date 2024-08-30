@@ -38,7 +38,7 @@
         var result = $('#textopesquisa').val(); 
         var idClinica = $('#idClinica').val();
         var url = "/Consulta/ListaPartialView";
-        var parametros = { nome: result, idClinica : idClinica };
+        var parametros = { pagina: 1, textopesquisa: result, idClinica : idClinica };
         $.get(url, parametros) 
             .done(function (data) {
                 $('#divpartial').html(data);  
