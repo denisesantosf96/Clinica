@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "watch Clinica",
+			"file": "D:\\Programação\\Projetos\\Clinica\\Clinica.csproj",
+			"problemMatcher": [],
+			"label": "dotnet: watch Clinica"
+		},
+		{
+			"type": "dotnet",
+			"task": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "dotnet: build"
+		}
+	]
+}

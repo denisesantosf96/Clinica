@@ -22,24 +22,35 @@ namespace Clinica.Controllers
 
         public IActionResult Index(int? pagina)
         {
+            // Define um valor padrão para IdClinica se não estiver na sessão.
+            if (HttpContext.Session.GetInt32("IdClinica") == null)
+            {
+                HttpContext.Session.SetInt32("IdClinica", 1); // Defina o valor padrão conforme necessário.
+            }
+
+            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0; // Recupera o IdClinica da sessão
 
             var nome = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty; // Define como string vazia se nulo
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
+                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome),
+                new SqlParameter("@idClinica", idClinica)
             };
             List<Paciente> pacientes = _context.RetornarLista<Paciente>("sp_consultarPaciente", parametros);
 
-            
+
             ViewBagClinicas();
+            ViewBagConsultas(idClinica);
             return View(pacientes.ToPagedList(numeroPagina, itensPorPagina));
         }
 
         [HttpGet]
-        public IActionResult Detalhe(int id, int idClinica)
+        public IActionResult Detalhe(int id)
         {
             Models.Paciente paciente = new Models.Paciente();
+            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
+
             if (id > 0)
             {
                 SqlParameter[] parametros = new SqlParameter[]{
@@ -47,13 +58,13 @@ namespace Clinica.Controllers
             };
                 paciente = _context.ListarObjeto<Models.Paciente>("sp_buscarPacientePorId", parametros);
             }
-            else 
+            else
             {
                 paciente.IdClinica = idClinica;
             }
-            
 
-            ViewBagConsultas(id > 0 ? paciente.IdClinica : idClinica);
+
+            ViewBagConsultas(paciente.IdClinica);
             return View(paciente);
         }
 
@@ -96,6 +107,11 @@ namespace Clinica.Controllers
 
             if (ModelState.IsValid)
             {
+
+                if (paciente.IdClinica == 0) // Se o IdClinica não estiver preenchido
+                {
+                    paciente.IdClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0; // Recupera o IdClinica da sessão
+                }
 
                 List<SqlParameter> parametros = new List<SqlParameter>(){
                     new SqlParameter("@Nome", paciente.Nome),
@@ -155,17 +171,21 @@ namespace Clinica.Controllers
             return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
         }
 
-        public PartialViewResult ListaPartialView(string nome)
+        public PartialViewResult ListaPartialView(string nome, int idClinica)
         {
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
+                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome),
+                new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Paciente> pacientes = _context.RetornarLista<Models.Paciente>("sp_consultarPaciente", parametros);
 
-            if (string.IsNullOrEmpty(nome)){
+            if (string.IsNullOrEmpty(nome))
+            {
                 HttpContext.Session.Remove("TextoPesquisa");
-            } else {
-            HttpContext.Session.SetString("TextoPesquisa", nome);
+            }
+            else
+            {
+                HttpContext.Session.SetString("TextoPesquisa", nome);
             }
 
             return PartialView(pacientes.ToPagedList(1, itensPorPagina));
