@@ -33,8 +33,9 @@
 
     function Pesquisar() {
         var result = $('#textopesquisa').val();
+        var idClinica = $('#idClinica').val();
         var url = "/Medico/ListaPartialView";
-        var parametros = { nome: result };
+        var parametros = { especializacao: result, idClinica: idClinica };
         $.get(url, parametros)
             .done(function (data) {
                 $('#divpartial').html(data);
