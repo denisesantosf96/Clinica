@@ -5,13 +5,14 @@
     ViewData["Title"] = "Médicos";
 }
 
-@section Scripts{
+@section Scripts {
 
 }
 <div class="text-center">
     <h4>Médicos</h4>
-    <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
-    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="⌕ Pesquisar">
+    <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="AtualizarClinica()"></select>
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
+        value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="⌕ Pesquisar">
     <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
     <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
     <a asp-area="" asp-controller="Medico" asp-action="Detalhe"><input type="button" value="Novo"
@@ -24,18 +25,19 @@
 <script>
     function Limpar() {
         $('#textopesquisa').val('');
+        Pesquisar();
+        recarregarPagina();
     }
 
     //limpar textopesquisa ao recarregar a página
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("textopesquisa").value = "";
     });
 
     function Pesquisar() {
         var result = $('#textopesquisa').val();
-        var idClinica = $('#idClinica').val();
         var url = "/Medico/ListaPartialView";
-        var parametros = { especializacao: result, idClinica: idClinica };
+        var parametros = { nome: result };
         $.get(url, parametros)
             .done(function (data) {
                 $('#divpartial').html(data);
@@ -43,8 +45,8 @@
     }
 
     function recarregarPagina() {
-            location.reload();
-        }
+        location.reload();
+    }
 
     document.getElementById("limpar").addEventListener("click", recarregarPagina);
 
