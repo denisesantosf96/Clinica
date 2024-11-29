@@ -25,7 +25,7 @@ namespace Clinica.Controllers
                 HttpContext.Session.SetInt32("IdClinica", 1);
             }
 
-            var nome = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty;
+            var especializacao = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty;
             int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
             int numeroPagina = (pagina ?? 1);
 
@@ -33,7 +33,8 @@ namespace Clinica.Controllers
             _logger.LogInformation("ID da Clínica: {IdClinica}", idClinica);
 
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
+                new SqlParameter("@especializacao", especializacao),
+                new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Medico> medicos = _context.RetornarLista<Models.Medico>("sp_consultarMedico", parametros);
 
@@ -41,6 +42,7 @@ namespace Clinica.Controllers
             _logger.LogInformation("Total de médicos retornados: {TotalMedicos}", medicos.Count);
 
             ViewBagClinicas();
+            ViewBagConsultas(idClinica);
             return View(medicos.ToPagedList(numeroPagina, itensPorPagina));
         }
 
@@ -55,12 +57,14 @@ namespace Clinica.Controllers
                 new SqlParameter("@identificacao", id)
             };
                 medico = _context.ListarObjeto<Models.Medico>("sp_buscarMedicoPorId", parametros);
+                idClinica = medico.IdClinica;
             }
             else
             {
                 medico.IdClinica = idClinica;
             }
 
+            ViewBagConsultas(medico.IdClinica);
             return View(medico);
         }
 
@@ -132,12 +136,13 @@ namespace Clinica.Controllers
                     new SqlParameter("@CEP", medico.CEP),
                     new SqlParameter("@DataNascimento", medico.DataNascimento),
                     new SqlParameter("@Especializacao", medico.Especializacao),
-                    new SqlParameter("@CRM", medico.CRM)
+                    new SqlParameter("@CRM", medico.CRM),
+                    new SqlParameter("@IdConsulta", medico.IdConsulta)
                 };
 
-                if (medico.IdPessoa > 0)
+                if (medico.Id > 0)
                 {
-                    parametros.Add(new SqlParameter("@Id", medico.IdPessoa));
+                    parametros.Add(new SqlParameter("@Id", medico.Id));
                     parametros.Add(new SqlParameter("@Acao", 2));
                     parametros.Add(new SqlParameter("@Opcao", "medico"));
                 }
@@ -159,6 +164,7 @@ namespace Clinica.Controllers
                 }
             }
 
+            ViewBagConsultas(medico.IdClinica);
             return View(medico);
         }
 
@@ -176,7 +182,7 @@ namespace Clinica.Controllers
             if (medico != null)
             {
                 SqlParameter[] parametrosExclusao = new SqlParameter[] {
-            new SqlParameter("@Id", medico.IdPessoa),
+            new SqlParameter("@Id", id),
             new SqlParameter("@Acao", 0),
             new SqlParameter("@Opcao", "medico")
         };
@@ -195,20 +201,21 @@ namespace Clinica.Controllers
             }
         }
 
-        public PartialViewResult ListaPartialView(string nome)
+        public PartialViewResult ListaPartialView(string especializacao, int idClinica)
         {
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome)
+                new SqlParameter("@especializacao", string.IsNullOrEmpty(especializacao) ? (object)DBNull.Value : especializacao),
+                new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Medico> medicos = _context.RetornarLista<Models.Medico>("sp_consultarMedico", parametros);
 
-            if (string.IsNullOrEmpty(nome))
+            if (string.IsNullOrEmpty(especializacao))
             {
                 HttpContext.Session.Remove("TextoPesquisa");
             }
             else
             {
-                HttpContext.Session.SetString("TextoPesquisa", nome);
+                HttpContext.Session.SetString("TextoPesquisa", especializacao);
             }
 
             return PartialView(medicos.ToPagedList(1, itensPorPagina));
@@ -225,6 +232,22 @@ namespace Clinica.Controllers
             ViewBag.Clinicas = clinicas.Select(c => new SelectListItem()
             {
                 Text = c.Nome,
+                Value = c.Id.ToString()
+            }).ToList();
+        }
+
+        private void ViewBagConsultas(int idClinica)
+        {
+            SqlParameter[] param = new SqlParameter[]{
+                new SqlParameter("@idClinica", idClinica)
+            };            
+            List<Models.Consulta> consultas = new List<Models.Consulta>();
+
+            consultas = _context.RetornarLista<Models.Consulta>("sp_consultarConsulta", param);
+
+            ViewBag.Consultas = consultas.Select(c => new SelectListItem()
+            {
+                Text = c.Id + " - " + c.Nome,
                 Value = c.Id.ToString()
             }).ToList();
         }
