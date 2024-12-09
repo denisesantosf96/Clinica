@@ -25,21 +25,15 @@ namespace Clinica.Controllers
                 HttpContext.Session.SetInt32("IdClinica", 1);
             }
 
-            var especializacao = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty;
             int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
+            var especializacao = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty;
             int numeroPagina = (pagina ?? 1);
-
-            // Log para verificar o ID da clínica
-            _logger.LogInformation("ID da Clínica: {IdClinica}", idClinica);
 
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@especializacao", especializacao),
                 new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Medico> medicos = _context.RetornarLista<Models.Medico>("sp_consultarMedico", parametros);
-
-            // Log para verificar a lista de médicos retornados
-            _logger.LogInformation("Total de médicos retornados: {TotalMedicos}", medicos.Count);
 
             ViewBagClinicas();
             ViewBagConsultas(idClinica);
@@ -57,7 +51,6 @@ namespace Clinica.Controllers
                 new SqlParameter("@identificacao", id)
             };
                 medico = _context.ListarObjeto<Models.Medico>("sp_buscarMedicoPorId", parametros);
-                idClinica = medico.IdClinica;
             }
             else
             {
@@ -140,9 +133,9 @@ namespace Clinica.Controllers
                     new SqlParameter("@IdConsulta", medico.IdConsulta)
                 };
 
-                if (medico.Id > 0)
+                if (medico.IdPessoa > 0)
                 {
-                    parametros.Add(new SqlParameter("@Id", medico.Id));
+                    parametros.Add(new SqlParameter("@Id", medico.IdPessoa));
                     parametros.Add(new SqlParameter("@Acao", 2));
                     parametros.Add(new SqlParameter("@Opcao", "medico"));
                 }
@@ -170,9 +163,6 @@ namespace Clinica.Controllers
 
         public JsonResult Excluir(int id)
         {
-
-            _logger.LogInformation("Tentando excluir médico com ID: {id}", id);
-
             SqlParameter[] parametrosBusca = new SqlParameter[] {
             new SqlParameter("@identificacao", id)
         };
@@ -182,13 +172,10 @@ namespace Clinica.Controllers
             if (medico != null)
             {
                 SqlParameter[] parametrosExclusao = new SqlParameter[] {
-            new SqlParameter("@Id", id),
+            new SqlParameter("@Id", medico.IdPessoa),
             new SqlParameter("@Acao", 0),
             new SqlParameter("@Opcao", "medico")
         };
-
-                _logger.LogInformation("Enviando parâmetros para sp_salvarPessoa: {parametros}",
-                    string.Join(", ", parametrosExclusao.Select(p => $"{p.ParameterName} = {p.Value}")));
 
                 var retorno = _context.ListarObjeto<RetornoProcedure>("sp_salvarPessoa", parametrosExclusao);
 
@@ -240,14 +227,14 @@ namespace Clinica.Controllers
         {
             SqlParameter[] param = new SqlParameter[]{
                 new SqlParameter("@idClinica", idClinica)
-            };            
+            };
             List<Models.Consulta> consultas = new List<Models.Consulta>();
 
             consultas = _context.RetornarLista<Models.Consulta>("sp_consultarConsulta", param);
 
             ViewBag.Consultas = consultas.Select(c => new SelectListItem()
             {
-                Text = c.Id + " - " + c.Nome,
+                Text = c.Id.ToString(),
                 Value = c.Id.ToString()
             }).ToList();
         }

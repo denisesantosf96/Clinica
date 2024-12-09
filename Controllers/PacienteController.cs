@@ -171,9 +171,6 @@ namespace Clinica.Controllers
             new SqlParameter("@Opcao", "paciente")      
         };
 
-                _logger.LogInformation("Enviando parâmetros para sp_salvarPessoa: {parametros}",
-                    string.Join(", ", parametrosExclusao.Select(p => $"{p.ParameterName} = {p.Value}")));
-
                 var retorno = _context.ListarObjeto<RetornoProcedure>("sp_salvarPessoa", parametrosExclusao);
 
                 return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
