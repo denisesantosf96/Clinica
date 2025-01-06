@@ -22,8 +22,6 @@
         <div class="col-md-6">
             <input asp-for="Id" type="hidden" class="form-control">
             <input asp-for="IdClinica" type="hidden">
-            <input asp-for="IdPessoa" type="hidden">
-            <input type="hidden" asp-for="Opcao" value="medico" />
             <label for="inputNome" class="form-label">Nome</label>
             <input asp-for="Nome" type="text" class="form-control">
         </div>
@@ -108,18 +106,7 @@
             <label for="inputCRM" class="form-label">CRM</label>
             <input asp-for="CRM" type="text" class="form-control">
         </div>
-    </div>
-
-     <div class="row">
-        <div class="col-md-6">
-            <label class="form-label">IdConsulta</label>
-            <select asp-for="IdConsulta" asp-items="@ViewBag.Consultas" class="form-control">
-                <option>Selecione uma consulta</option>
-            </select>
-        </div>
-    </div>
-
-    
+    </div>    
 
     <input type="submit" value="Salvar" class="btn btn-success" 
         style="margin-top: 30px; margin-bottom: 15px;">

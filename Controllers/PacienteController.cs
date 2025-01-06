@@ -19,26 +19,19 @@ namespace Clinica.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int? pagina)
+        public IActionResult Index(int? pagina, string textopesquisa)
         {
         
-            if (HttpContext.Session.GetInt32("IdClinica") == null)
-            {
-                HttpContext.Session.SetInt32("IdClinica", 1); 
-            }
-
-            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0; 
+            
             var nome = HttpContext.Session.GetString("TextoPesquisa") ?? string.Empty; 
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome),
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@nome", nome)
             };
             List<Paciente> pacientes = _context.RetornarLista<Paciente>("sp_consultarPaciente", parametros);
 
             ViewBagClinicas();
-            ViewBagConsultas(idClinica);
             return View(pacientes.ToPagedList(numeroPagina, itensPorPagina));
         }
 
@@ -46,7 +39,6 @@ namespace Clinica.Controllers
         public IActionResult Detalhe(int id)
         {
             Models.Paciente paciente = new Models.Paciente();
-            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
 
             if (id > 0)
             {
@@ -55,12 +47,7 @@ namespace Clinica.Controllers
             };
                 paciente = _context.ListarObjeto<Models.Paciente>("sp_buscarPacientePorId", parametros);
             }
-            else
-            {
-                paciente.IdClinica = idClinica;
-            }
 
-            ViewBagConsultas(paciente.IdClinica);
             return View(paciente);
         }
 
@@ -104,11 +91,6 @@ namespace Clinica.Controllers
             if (ModelState.IsValid)
             {
 
-                if (paciente.IdClinica == 0) 
-                {
-                    paciente.IdClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0; 
-                }
-
                 List<SqlParameter> parametros = new List<SqlParameter>(){
                     new SqlParameter("@Nome", paciente.Nome),
                     new SqlParameter("@CPF", paciente.CPF),
@@ -123,70 +105,44 @@ namespace Clinica.Controllers
                     new SqlParameter("@Estado", paciente.Estado),
                     new SqlParameter("@Pais", paciente.Pais),
                     new SqlParameter("@CEP", paciente.CEP),
-                    new SqlParameter("@DataNascimento", paciente.DataNascimento),
-                    new SqlParameter("@IdConsulta", paciente.IdConsulta)
+                    new SqlParameter("@DataNascimento", paciente.DataNascimento)
                 };
 
-                if (paciente.IdPessoa > 0)
+                if (paciente.Id > 0)
                 {
-                    parametros.Add(new SqlParameter("@Id", paciente.IdPessoa));
-                    parametros.Add(new SqlParameter("@Acao", 2));
-                    parametros.Add(new SqlParameter("@Opcao", "paciente"));
+                    parametros.Add(new SqlParameter("@Identificacao", paciente.Id));
                 }
-                else
-                {
-                    parametros.Add(new SqlParameter("@Acao", 1));
-                    parametros.Add(new SqlParameter("@Opcao", "paciente"));
-                }
+                var retorno = _context.ListarObjeto<RetornoProcedure>(paciente.Id > 0 ? "sp_atualizarPaciente" : "sp_inserirPaciente", parametros.ToArray());
 
-                var retorno = _context.ListarObjeto<RetornoProcedure>("sp_salvarPessoa", parametros.ToArray());
-
-                if (retorno != null && retorno.Mensagem == "Ok")
+                if (retorno.Mensagem == "Ok")
                 {
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError("", retorno?.Mensagem ?? "Erro desconhecido ao salvar os dados.");
+                    ModelState.AddModelError("", retorno.Mensagem);
+
                 }
             }
 
-            ViewBagConsultas(paciente.IdClinica);
             return View(paciente);
         }
 
         public JsonResult Excluir(int id)
         {
-            SqlParameter[] parametrosBusca = new SqlParameter[] {
-        new SqlParameter("@identificacao", id) 
-    };
-
-            var paciente = _context.ListarObjeto<Models.Paciente>("sp_buscarPacientePorId", parametrosBusca);
-
-            if (paciente != null)
-            {
-                SqlParameter[] parametrosExclusao = new SqlParameter[] {
-            new SqlParameter("@Id", paciente.IdPessoa), 
-            new SqlParameter("@Acao", 0),               
-            new SqlParameter("@Opcao", "paciente")      
-        };
-
-                var retorno = _context.ListarObjeto<RetornoProcedure>("sp_salvarPessoa", parametrosExclusao);
-
-                return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
-            }
-            else
-            {
-                return new JsonResult(new { Sucesso = false, Mensagem = "Paciente não encontrado" });
-            }
+            SqlParameter[] parametros = new SqlParameter[]{
+                new SqlParameter("@Identificacao", id)
+            };
+            var retorno = _context.ListarObjeto<RetornoProcedure>("sp_excluirPaciente", parametros);
+            return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
         }
 
 
-        public PartialViewResult ListaPartialView(string nome, int idClinica)
+        public PartialViewResult ListaPartialView(string nome)
         {
+            
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@nome", string.IsNullOrEmpty(nome) ? (object)DBNull.Value : nome),
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@nome",  nome)
             };
             List<Models.Paciente> pacientes = _context.RetornarLista<Models.Paciente>("sp_consultarPaciente", parametros);
 
@@ -213,21 +169,6 @@ namespace Clinica.Controllers
             ViewBag.Clinicas = clinicas.Select(c => new SelectListItem()
             {
                 Text = c.Nome,
-                Value = c.Id.ToString()
-            }).ToList();
-        }
-
-        private void ViewBagConsultas(int idClinica)
-        {
-            SqlParameter[] param = new SqlParameter[]{
-                new SqlParameter("@idClinica", idClinica)
-            };
-            List<Models.Consulta> consultas = new List<Models.Consulta>();
-            consultas = _context.RetornarLista<Models.Consulta>("sp_consultarConsulta", param);
-
-            ViewBag.Consultas = consultas.Select(c => new SelectListItem()
-            {
-                Text = c.Id + " - " + c.Nome + " - " + c.Valor,
                 Value = c.Id.ToString()
             }).ToList();
         }

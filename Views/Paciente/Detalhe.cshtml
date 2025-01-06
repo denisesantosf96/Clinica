@@ -21,9 +21,6 @@
     <div class="row">
         <div class="col-md-6">
             <input asp-for="Id" type="hidden">
-            <input asp-for="IdClinica" type="hidden">
-            <input asp-for="IdPessoa" type="hidden">
-            <input type="hidden" asp-for="Opcao" value="paciente" />
             <label for="inputNome" class="form-label">Nome</label>
             <input asp-for="Nome" type="text" class="form-control">
         </div>
@@ -96,15 +93,6 @@
         <div class="col-md-6">
             <label for="inputDataNascimento" class="form-label">Data de Nascimento</label>
             <input asp-for="DataNascimento" type="datetime-local" class="form-control">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <label class="form-label">Consulta</label>
-            <select asp-for="IdConsulta" asp-items="@ViewBag.Consultas" class="form-control">
-                <option>Selecione uma consulta</option>
-            </select>
         </div>
     </div>
 
