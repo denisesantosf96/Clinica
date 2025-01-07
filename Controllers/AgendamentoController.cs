@@ -18,7 +18,7 @@ namespace Clinica.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int? pagina)
+        public IActionResult Index(int? pagina, string textopesquisa)
         {
             if (HttpContext.Session.GetInt32("IdClinica") == null)
             {
@@ -28,10 +28,19 @@ namespace Clinica.Controllers
             int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
             int numeroPagina = (pagina ?? 1);
 
+            _logger.LogInformation("ID da Clínica: {IdClinica}", idClinica);
+
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@idClinica", idClinica)
             };
             List<Models.Agendamento> agendamentos = _context.RetornarLista<Models.Agendamento>("sp_consultarAgendamento", parametros);
+
+            if (!string.IsNullOrEmpty(textopesquisa))
+            {
+                agendamentos = agendamentos
+                    .Where(c => c.NomePaciente != null && c.NomePaciente.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
 
             ViewBagClinicas();
             return View(agendamentos.ToPagedList(numeroPagina, itensPorPagina));
@@ -54,21 +63,25 @@ namespace Clinica.Controllers
                 agendamento.IdClinica = idClinica;
             }
 
+            ViewBagClinicas();
             ViewBagConsultas(agendamento.IdClinica);
+            ViewBagMedicos(agendamento.Especializacao ?? "");
+            ViewBagPacientes(agendamento.Nome ?? "");  // Passa string vazia caso agendamento.Nome seja nulo
             return View(agendamento);
         }
 
         [HttpPost]
         public IActionResult Detalhe(Models.Agendamento agendamento)
         {
+            ModelState.Remove("Nome");
+            ModelState.Remove("NomeConsulta");
+            ModelState.Remove("NomeMedico");
+            ModelState.Remove("NomePaciente");
+            ModelState.Remove("NomeClinica");
+            ModelState.Remove("Especializacao");
 
             if (ModelState.IsValid)
             {
-                if (agendamento.IdClinica == 0)
-                {
-                    agendamento.IdClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
-                }
-
                 List<SqlParameter> parametros = new List<SqlParameter>(){
                     new SqlParameter("@IdConsulta", agendamento.IdConsulta),
                     new SqlParameter("@IdMedico", agendamento.IdMedico),
@@ -96,6 +109,8 @@ namespace Clinica.Controllers
             }
 
             ViewBagConsultas(agendamento.IdClinica);
+            ViewBagMedicos(agendamento.Especializacao ?? "");
+            ViewBagPacientes(agendamento.Nome ?? "");
             return View(agendamento);
         }
 
@@ -114,18 +129,18 @@ namespace Clinica.Controllers
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@idClinica", idClinica)
             };
-            List<Consulta> consultas = _context.RetornarLista<Consulta>("sp_consultarAgendamento", parametros);
+            List<Agendamento> agendamentos = _context.RetornarLista<Agendamento>("sp_consultarAgendamento", parametros);
 
             if (!string.IsNullOrEmpty(textopesquisa))
             {
-                consultas = consultas
-                    .Where(c => c.Nome != null && c.Nome.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
+                agendamentos = agendamentos
+                    .Where(c => c.NomePaciente != null && c.NomePaciente.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
-            HttpContext.Session.SetInt32("@IdClinica", idClinica);
+            HttpContext.Session.SetInt32("IdClinica", idClinica);
 
-            return PartialView(consultas.ToPagedList(1, itensPorPagina));
+            return PartialView(agendamentos.ToPagedList(1, itensPorPagina));
         }
 
         private void ViewBagClinicas()
@@ -154,7 +169,39 @@ namespace Clinica.Controllers
 
             ViewBag.Consultas = consultas.Select(c => new SelectListItem()
             {
-                Text = c.Id.ToString(),
+                Text = c.Id + " - " + c.Nome,
+                Value = c.Id.ToString()
+            }).ToList();
+        }
+
+        private void ViewBagMedicos(string especializacao)
+        {
+            SqlParameter[] param = new SqlParameter[]{
+                new SqlParameter("@especializacao", especializacao)
+            };
+            List<Models.Medico> medicos = new List<Models.Medico>();
+
+            medicos = _context.RetornarLista<Models.Medico>("sp_consultarMedico", param);
+
+            ViewBag.Medicos = medicos.Select(c => new SelectListItem()
+            {
+                Text = c.Id + " - " + c.Nome,
+                Value = c.Id.ToString()
+            }).ToList();
+        }
+
+        private void ViewBagPacientes(string nome)
+        {
+            SqlParameter[] param = new SqlParameter[]{
+                new SqlParameter("@nome", nome)
+            };
+            List<Models.Paciente> pacientes = new List<Models.Paciente>();
+
+            pacientes = _context.RetornarLista<Models.Paciente>("sp_consultarPaciente", param);
+
+            ViewBag.Pacientes = pacientes.Select(c => new SelectListItem()
+            {
+                Text = c.Id + " - " + c.Nome,
                 Value = c.Id.ToString()
             }).ToList();
         }

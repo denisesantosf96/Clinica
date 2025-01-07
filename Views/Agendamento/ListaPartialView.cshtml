@@ -6,10 +6,10 @@
         <thead class="thead-dark">
         <tr>
             <th>Id</th>
-            <th>IdConsulta</th>
+            <th>Clínica</th>
 
-            <th>IdMedico</th>
-            <th>IdPaciente</th>            
+            <th>Médico</th>
+            <th>Paciente</th>            
             
             <th>Data</th>
             <th></th>
@@ -20,11 +20,11 @@
             {
                 <tr>
             <td>@Model[i].Id</td>
-            <td>@Model[i].IdConsulta</td>
-            <td>@Model[i].IdMedico</td>
-            <td>@Model[i].IdPaciente</td>
+            <td>@Model[i].IdClinica - @Model[i].NomeClinica</td>
+            <td>@Model[i].IdMedico - @Model[i].NomeMedico - @Model[i].Especializacao</td>
+            <td>@Model[i].IdPaciente - @Model[i].NomePaciente</td>            
             <td>@Model[i].Data</td>
-            <td><input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Clinica/Detalhe/${@Model[i].Id}`">
+            <td><input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Agendamento/Detalhe/${@Model[i].Id}`">
             <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)"></td>
             
             </tr>

@@ -21,8 +21,9 @@
     <div class="row">
         <div class="col-md-6">
             <input asp-for="Id" type="hidden" class="form-control">
+            <input asp-for="IdClinica" class="form-control">
             <label class="form-label">Clínica</label>
-            <select asp-for="IdClinica" asp-items="@ViewBag.Clinicas" class="form-control"></select>
+            <select asp-for="IdClinica" asp-items="@ViewBag.Clinicas" class="form-control" disabled></select>
         </div>
         <div class="col-md-6">
             <label class="form-label">IdConsulta</label>
@@ -62,7 +63,7 @@
         <div class="col-md-4">
             <label class="form-label">Forma de Pagamento</label>
             <select asp-for="FormaPagamento" class="form-control">
-                <option></option>
+                <option>Selecione a Forma de Pagamento</option>
                 <option>Cartão de Crédito</option>
                 <option>Cartão de Débito</option>
                 <option>Dinheiro</option>
@@ -79,6 +80,6 @@
 
 <script>
     function Voltar(){
-        window.location.href = "http://localhost:5210/Consulta";
+        window.location.href = "http://localhost:5210/Agendamento";
     }
 </script>

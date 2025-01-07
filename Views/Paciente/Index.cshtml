@@ -10,7 +10,6 @@
 }
 <div class="text-center">
     <h4>Pacientes</h4>
-    <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
     <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="⌕ Pesquisar">
     <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
     <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
@@ -35,10 +34,9 @@
 
     function Pesquisar() {
         var result = $('#textopesquisa').val();
-        var idClinica = $('#idClinica').val();
         var url = "/Paciente/ListaPartialView";
-        var parametros = { nome: result, idClinica: idClinica };
-        $.get(url, parametros)
+        var parametros = { nome: result };
+        $.get(url, parametros) 
             .done(function (data) {
                 $('#divpartial').html(data);
             });
