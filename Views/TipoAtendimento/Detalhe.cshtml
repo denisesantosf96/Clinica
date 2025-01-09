@@ -23,14 +23,14 @@
 </div>
 
 
-<form method="POST" asp-action="Detalhe" asp-controller="Atendimento" class="form p-5"
+<form method="POST" asp-action="Detalhe" asp-controller="TipoAtendimento" class="form p-5"
       style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
     <div class="text-danger">@Html.ValidationSummary()</div>
 
     <div class="row">
         <div class="col-md-4">
-            <input asp-for="IdClinica" type="hidden">
             <input asp-for="Id" type="hidden">
+            <input asp-for="IdClinica">
             <label class="form-label">Especialidade</label>
             <select asp-items="@ViewBag.Especialidades" asp-for="IdEspecialidade" class="form-control">
                 <option>Selecione uma Especialidade</option>

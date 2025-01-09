@@ -20,7 +20,8 @@ namespace Clinica.Controllers
 
         public IActionResult Index(int? pagina, string textopesquisa)
         {
-            var idClinica = 1;
+
+            int idClinica = 1;
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
@@ -43,6 +44,7 @@ namespace Clinica.Controllers
         public IActionResult Detalhe(int id)
         {
             Models.TipoAtendimento atendimento = new Models.TipoAtendimento();
+
             if (id > 0)
             {
                 SqlParameter[] parametros = new SqlParameter[]{
@@ -104,16 +106,20 @@ namespace Clinica.Controllers
 
         public PartialViewResult ListaPartialView(int idClinica, string textopesquisa)
         {
+
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@dClinica", idClinica)
+                new SqlParameter("@IdClinica", idClinica)
             };
             List<Models.TipoAtendimento> atendimentos = _context.RetornarLista<Models.TipoAtendimento>("sp_consultarTipoAtendimento", parametros);
+
             if (!string.IsNullOrEmpty(textopesquisa))
             {
                 atendimentos = atendimentos
                     .Where(c => c.NomeEspecialidade != null && c.NomeEspecialidade.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
+
+            HttpContext.Session.SetInt32("@IdClinica", idClinica);
 
             return PartialView(atendimentos.ToPagedList(1, itensPorPagina));
         }
@@ -132,5 +138,6 @@ namespace Clinica.Controllers
                 Value = c.Id.ToString()
             }).ToList();
         }
+        
     }
 }
