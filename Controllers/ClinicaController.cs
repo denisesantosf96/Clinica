@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Clinica.Controllers
 {
@@ -70,9 +70,8 @@ namespace Clinica.Controllers
             if(string.IsNullOrEmpty(clinica.CEP)){
                 ModelState.AddModelError("", "O CEP deve ser informado");
             }
-            if(string.IsNullOrEmpty(clinica.Atendimento)){
-                ModelState.AddModelError("", "O Atendimento deve ser informado");
-            }
+
+
             if(ModelState.IsValid){
            
                 List<SqlParameter> parametros = new List<SqlParameter>(){
@@ -85,8 +84,7 @@ namespace Clinica.Controllers
                     new SqlParameter("@Cidade", clinica.Cidade),
                     new SqlParameter("@Estado", clinica.Estado),
                     new SqlParameter("@Pais", clinica.Pais),
-                    new SqlParameter("@CEP", clinica.CEP),
-                    new SqlParameter("@Atendimento", clinica.Atendimento)
+                    new SqlParameter("@CEP", clinica.CEP)
                 };
                 if (clinica.Id > 0){
                     parametros.Add(new SqlParameter("@Identificacao", clinica.Id));

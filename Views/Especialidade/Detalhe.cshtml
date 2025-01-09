@@ -1,0 +1,61 @@
+﻿@model Especialidade
+@{
+    ViewData["Title"] = "Adicionar uma nova Especialidade";
+}
+<div class="text-center">
+    <h4>
+        @if (Model.Id > 0)
+        {
+            @Html.Raw("Editar Especialidade")
+            ;
+        }
+        else
+        {
+            @Html.Raw("Incluir Especialidade")
+            ;
+        }
+    </h4>
+</div>
+<form method="POST" asp-action="Detalhe" asp-controller="Especialidade" class="form p-5"
+      style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+    <div class="text-danger">@Html.ValidationSummary()</div>
+    <div class="row">
+        <div class="col-md-6">
+            <input asp-for="Id" type="hidden" class="form-control">
+            <label for="inputNome" class="form-label">Nome</label>
+            <select asp-for="Nome" class="form-control">
+                <option>Selecione uma Especialidade</option>
+                <option>Dermatalogista</option>
+                <option>Cardiologista</option>
+                <option>Clínico Geral</option>
+                <option>Coleta de Sangue</option>
+                <option>Fisioterapeuta</option>
+                <option>Oftalmologista</option>
+                <option>Pediatra</option>
+                <option>Raio-x</option>
+                <option>Ultrassonografia</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="inputTipo" class="form-label">Tipo</label>
+            <select asp-for="Tipo" class="form-control">
+                <option>Selecione o Tipo</option>
+                <option>Consulta</option>
+                <option>Exame</option>
+            </select>
+        </div>
+    </div>
+    <input type="submit" value="Salvar" class="btn btn-success"
+           style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+           style="margin-top: 30px; margin-bottom: 15px;"></td>
+</form>
+<script>
+    function Voltar() {
+        window.location.href = "http://localhost:5210/Especialidade";
+    }
+    window.onload = function () {
+        $("#CEP").inputmask('99999-999');
+        $("#Telefone").inputmask('(99)99999-9999');
+    }
+</script>

@@ -2,8 +2,7 @@
 using System.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Clinica.Controllers
 {

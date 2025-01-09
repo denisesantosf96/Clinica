@@ -1,0 +1,74 @@
+﻿@model TipoAtendimento
+@{
+    ViewData["Title"] = "Adicionar um novo Atendimento";
+}
+
+@section Scripts {
+
+}
+
+<div class="text-center">
+    <h4>
+        @if (Model.Id > 0)
+        {
+            @Html.Raw("Editar Atendimento")
+            ;
+        }
+        else
+        {
+            @Html.Raw("Incluir Atendimento")
+            ;
+        }
+    </h4>
+</div>
+
+
+<form method="POST" asp-action="Detalhe" asp-controller="Atendimento" class="form p-5"
+      style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+    <div class="text-danger">@Html.ValidationSummary()</div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <input asp-for="IdClinica" type="hidden">
+            <input asp-for="Id" type="hidden">
+            <label class="form-label">Especialidade</label>
+            <select asp-items="@ViewBag.Especialidades" asp-for="IdEspecialidade" class="form-control">
+                <option>Selecione uma Especialidade</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Médico</label>
+            <select asp-items="@ViewBag.Medicos" asp-for="IdMedico" class="form-control">
+                <option>Selecione um(a) Médico(a)</option>
+            </select>
+        </div>
+        <div class="col-md-12">
+            <label for="inputDescricao" class="form-label">Descrição</label>
+            <input asp-for="Descricao" type="text" class="form-control">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Valor</label>
+            <input asp-for="Valor" type="text" class="form-control">
+        </div>
+    </div>
+
+    <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+           style="margin-top: 30px; margin-bottom: 15px"></td>
+</form>
+
+
+
+<script>
+        function Voltar(){
+            window.location.href = "http://localhost:5210/TipoAtendimento";
+        }
+
+        window.onload = function() {
+        $("#CEP").inputmask('99999-999');
+        $("#Telefone").inputmask('(99)99999-9999');
+    }
+</script>

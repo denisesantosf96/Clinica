@@ -1,93 +1,83 @@
-
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Clinica.Controllers
 {
-    public class ConsultaController : Controller
+    public class TipoAtendimentoController : Controller
     {
-        private readonly ILogger<ConsultaController> _logger;
+        private readonly ILogger<TipoAtendimentoController> _logger;
         private readonly DadosContext _context;
         const int itensPorPagina = 5;
 
-        public ConsultaController(ILogger<ConsultaController> logger, DadosContext context)
+        public TipoAtendimentoController(ILogger<TipoAtendimentoController> logger, DadosContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        [HttpGet]
         public IActionResult Index(int? pagina, string textopesquisa)
         {
-
             var idClinica = 1;
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@idClinica", idClinica)
             };
-            List<Consulta> consultas = _context.RetornarLista<Consulta>("sp_consultarConsulta", parametros);
+            List<Models.TipoAtendimento> atendimentos = _context.RetornarLista<Models.TipoAtendimento>("sp_consultarTipoAtendimento", parametros);
 
             // Se o textopesquisa não for nulo ou vazio, filtra os resultados
             if (!string.IsNullOrEmpty(textopesquisa))
             {
-                consultas = consultas
-                    .Where(c => c.Nome != null && c.Nome.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
+                atendimentos = atendimentos
+                    .Where(c => c.NomeEspecialidade != null && c.NomeEspecialidade.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
             ViewBagClinicas();
-            return View(consultas.ToPagedList(numeroPagina, itensPorPagina));
+            return View(atendimentos.ToPagedList(numeroPagina, itensPorPagina));
         }
 
         public IActionResult Detalhe(int id)
         {
-            Models.Consulta consulta = new Models.Consulta();
+            Models.TipoAtendimento atendimento = new Models.TipoAtendimento();
             if (id > 0)
             {
                 SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@identificacao", id)
             };
-                consulta = _context.ListarObjeto<Consulta>("sp_buscarConsultaPorId", parametros);
+                atendimento = _context.ListarObjeto<Models.TipoAtendimento>("sp_buscarTipoAtendimentoPorId", parametros);
             }
 
             ViewBagClinicas();
-            return View(consulta);
+            return View(atendimento);
         }
 
-
-
         [HttpPost]
-        public IActionResult Detalhe(Models.Consulta consulta)
+        public IActionResult Detalhe(Models.TipoAtendimento atendimento)
         {
-
-            if (string.IsNullOrEmpty(consulta.Nome))
+            if (string.IsNullOrEmpty(atendimento.Descricao))
             {
-                ModelState.AddModelError("", "O nome deve ser preenchido");
-            }
-            if (string.IsNullOrEmpty(consulta.Descricao))
-            {
-                ModelState.AddModelError("", "A descrição deve ser preenchida");
+                ModelState.AddModelError("", "O nome não pode ser vazio");
             }
 
             if (ModelState.IsValid)
             {
 
                 List<SqlParameter> parametros = new List<SqlParameter>(){
-
-                    new SqlParameter("@IdClinica", consulta.IdClinica),
-                    new SqlParameter("@Nome", consulta.Nome),
-                    new SqlParameter("@Descricao", consulta.Descricao),
-                    new SqlParameter("@Valor", consulta.Valor)
+                    new SqlParameter("@IdClinica", atendimento.IdClinica),
+                    new SqlParameter("@IdEspecialidade", atendimento.IdEspecialidade),
+                    new SqlParameter("@IdMedico", atendimento.IdMedico),
+                    new SqlParameter("@Descricao", atendimento.Descricao),
+                    new SqlParameter("@Valor", atendimento.Valor)
                 };
-                if (consulta.Id > 0)
+                if (atendimento.Id > 0)
                 {
-                    parametros.Add(new SqlParameter("@Identificacao", consulta.Id));
+                    parametros.Add(new SqlParameter("@Identificacao", atendimento.Id));
                 }
-                var retorno = _context.ListarObjeto<RetornoProcedure>(consulta.Id > 0 ? "sp_atualizarConsulta" : "sp_inserirConsulta", parametros.ToArray());
+                var retorno = _context.ListarObjeto<RetornoProcedure>(atendimento.Id > 0 ? "sp_atualizarTipoAtendimento" : "sp_inserirTipoAtendimento", parametros.ToArray());
 
                 if (retorno.Mensagem == "Ok")
                 {
@@ -96,12 +86,11 @@ namespace Clinica.Controllers
                 else
                 {
                     ModelState.AddModelError("", retorno.Mensagem);
-
                 }
             }
 
             ViewBagClinicas();
-            return View(consulta);
+            return View(atendimento);
         }
 
         public JsonResult Excluir(int id)
@@ -109,28 +98,24 @@ namespace Clinica.Controllers
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@Identificacao", id)
             };
-            var retorno = _context.ListarObjeto<RetornoProcedure>("sp_excluirConsulta", parametros);
+            var retorno = _context.ListarObjeto<RetornoProcedure>("sp_excluirTipoAtendimento", parametros);
             return new JsonResult(new { Sucesso = retorno.Mensagem == "Excluído", Mensagem = retorno.Mensagem });
         }
 
         public PartialViewResult ListaPartialView(int idClinica, string textopesquisa)
         {
-
             SqlParameter[] parametros = new SqlParameter[]{
-                new SqlParameter("@idClinica", idClinica)
+                new SqlParameter("@dClinica", idClinica)
             };
-            List<Consulta> consultas = _context.RetornarLista<Consulta>("sp_consultarConsulta", parametros);
-
+            List<Models.TipoAtendimento> atendimentos = _context.RetornarLista<Models.TipoAtendimento>("sp_consultarTipoAtendimento", parametros);
             if (!string.IsNullOrEmpty(textopesquisa))
             {
-                consultas = consultas
-                    .Where(c => c.Nome != null && c.Nome.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
+                atendimentos = atendimentos
+                    .Where(c => c.NomeEspecialidade != null && c.NomeEspecialidade.Contains(textopesquisa, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
-            HttpContext.Session.SetInt32("@IdClinica", idClinica);
-
-            return PartialView(consultas.ToPagedList(1, itensPorPagina));
+            return PartialView(atendimentos.ToPagedList(1, itensPorPagina));
         }
 
         private void ViewBagClinicas()

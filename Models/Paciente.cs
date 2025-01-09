@@ -17,9 +17,5 @@ namespace Clinica.Models
         public string Pais { get; set; }
         public string CEP { get; set; }
         public DateTime DataNascimento { get; set; }
-        public int IdConsulta { get; set; }
-        public int IdClinica { get; set; }
-        public string? Descricao { get; set; } 
-        public decimal Valor { get; set; } 
     }
 }

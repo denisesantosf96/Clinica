@@ -10,7 +10,7 @@
 }
 <div class="text-center">
     <h4>Pacientes</h4>
-    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="⌕ Pesquisar">
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
     <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
     <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
     <a asp-area="" asp-controller="Paciente" asp-action="Detalhe"><input type="button" value="Novo"

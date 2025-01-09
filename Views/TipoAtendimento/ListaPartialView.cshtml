@@ -1,0 +1,32 @@
+﻿@model X.PagedList.IPagedList<TipoAtendimento>
+    @using X.PagedList.Mvc.Core;
+    @using X.PagedList.Web.Common;
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Especialidade</th>
+            <th>Medico</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>@Model[i].Id</td>
+                <td>@Model[i].NomeEspecialidade</td>
+                <td>@Model[i].NomeMedico</td>
+                <td>@Model[i].Descricao</td>
+                <td>@Model[i].Valor</td>
+                <td>
+                    <input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/TipoAtendimento/Detalhe/${@Model[i].Id}`">
+                    <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)">
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina }))
