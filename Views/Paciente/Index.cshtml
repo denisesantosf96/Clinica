@@ -1,35 +1,33 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model X.PagedList.IPagedList<Paciente>
-    @{
+@{
     ViewData["Title"] = "Pacientes";
-    }
+}
 
-    @section Scripts{
+@section Scripts{
 
-    }
-    <div class="text-center">
-        <h4>Pacientes</h4>
-        <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
-        <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
-        <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
-        <a asp-area="" asp-controller="Paciente" asp-action="Detalhe">
-            <input type="button" value="Novo"
-                   class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
-        </a>
-        <div id="divpartial">
-            <partial name="~/Views/Paciente/ListaPartialView.cshtml" />
-        </div>
+}
+<div class="text-center">
+    <h4>Pacientes</h4>
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="⌕ Pesquisar">
+    <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
+    <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
+    <a asp-area="" asp-controller="Paciente" asp-action="Detalhe"><input type="button" value="Novo"
+            class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;"></a>
+    <div id="divpartial">
+        <partial name="~/Views/Paciente/ListaPartialView.cshtml" />
     </div>
+</div>
 
-    <script>
+<script>
     function Limpar() {
-        $('#textopesquisa').val('');
+        $('#textopesquisa').val(''); 
         Pesquisar();
         recarregarPagina();
     }
 
-    //limpar textopesquisa ao recarregar a p�gina
+    //limpar textopesquisa ao recarregar a página
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("textopesquisa").value = "";
     });
@@ -38,7 +36,7 @@
         var result = $('#textopesquisa').val();
         var url = "/Paciente/ListaPartialView";
         var parametros = { nome: result };
-        $.get(url, parametros)
+        $.get(url, parametros) 
             .done(function (data) {
                 $('#divpartial').html(data);
             });
@@ -74,4 +72,4 @@
                 });
         }
     }
-    </script>
+</script>

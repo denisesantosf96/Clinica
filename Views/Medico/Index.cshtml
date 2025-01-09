@@ -1,36 +1,34 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model X.PagedList.IPagedList<Medico>
-    @{
-    ViewData["Title"] = "MÈdicos";
-    }
+@{
+    ViewData["Title"] = "M√©dicos";
+}
 
-    @section Scripts {
+@section Scripts {
 
-    }
-    <div class="text-center">
-        <h4>MÈdicos</h4>
-        <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
-               value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
-        <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
-        <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
-        <a asp-area="" asp-controller="Medico" asp-action="Detalhe">
-            <input type="button" value="Novo"
-                   class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
-        </a>
-        <div id="divpartial">
-            <partial name="~/Views/Medico/ListaPartialView.cshtml" />
-        </div>
+}
+<div class="text-center">
+    <h4>M√©dicos</h4>
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
+        value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="‚åï Pesquisar">
+    <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
+    <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
+    <a asp-area="" asp-controller="Medico" asp-action="Detalhe"><input type="button" value="Novo"
+            class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;"></a>
+    <div id="divpartial">
+        <partial name="~/Views/Medico/ListaPartialView.cshtml" />
     </div>
+</div>
 
-    <script>
+<script>
     function Limpar() {
         $('#textopesquisa').val('');
         Pesquisar();
         recarregarPagina();
     }
 
-    //limpar textopesquisa ao recarregar a p·gina
+    //limpar textopesquisa ao recarregar a p√°gina
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("textopesquisa").value = "";
     });
@@ -75,4 +73,4 @@
                 });
         }
     }
-    </script>
+</script>

@@ -1,35 +1,33 @@
 @model X.PagedList.IPagedList<Medico>
-    @using X.PagedList.Mvc.Core;
-    @using X.PagedList.Web.Common;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
 
-    <table class="table">
+<table class="table">
         <thead class="thead-dark">
-            <tr>
-                <th>Id</th>
-                <th>Nome</th>
+        <tr>
+            <th>Id</th>
+            <th>Nome</th>
 
-                <th>Especialização</th>
-                <th>CRM</th>
+            <th>EspecializaÃ§Ã£o</th>
+            <th>CRM</th>
 
-                <th></th>
-            </tr>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
             @for (int i = 0; i < Model.Count; i++)
             {
-            <tr>
-                <td>@Model[i].Id</td>
-                <td>@Model[i].Nome</td>
-                <td>@Model[i].Especializacao</td>
-                <td>@Model[i].CRM</td>
-                <td>
-                    <input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Medico/Detalhe/${@Model[i].Id}`">
-                    <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)">
-                </td>
-
+                <tr>
+            <td>@Model[i].Id</td>
+            <td>@Model[i].Nome</td>
+            <td>@Model[i].Especializacao</td>
+            <td>@Model[i].CRM</td>
+            <td><input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Medico/Detalhe/${@Model[i].Id}`">
+            <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)"></td>
+            
             </tr>
             }
-
+        
         </tbody>
     </table>
 
