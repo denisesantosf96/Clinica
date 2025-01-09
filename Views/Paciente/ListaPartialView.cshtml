@@ -1,39 +1,36 @@
-
 @model X.PagedList.IPagedList<Paciente>
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
 
-    <table class="table">
+<table class="table">
         <thead class="thead-dark">
-            <tr>
-                <th>Id</th>
+        <tr>
+            <th>Id</th>
 
-                <th>Nome</th>
-                <th>CPF</th>
+            <th>Nome</th>
+            <th>CPF</th>
 
-                <th>Telefone</th>
-                <th>E-mail</th>
+            <th>Telefone</th>
+            <th>E-mail</th>
 
-                <th></th>
-            </tr>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
             @for (int i = 0; i < Model.Count; i++)
             {
-            <tr>
-                <td>@Model[i].Id</td>
-                <td>@Model[i].Nome</td>
-                <td>@Model[i].CPF</td>
-                <td>@Model[i].Telefone</td>
-                <td>@Model[i].Email</td>
-                <td>
-                    <input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Paciente/Detalhe/${@Model[i].Id}`">
-                    <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)">
-                </td>
-
+                <tr>
+            <td>@Model[i].Id</td>
+            <td>@Model[i].Nome</td>
+            <td>@Model[i].CPF</td>
+            <td>@Model[i].Telefone</td>
+            <td>@Model[i].Email</td>
+            <td><input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/Paciente/Detalhe/${@Model[i].Id}`">
+            <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)"></td>
+            
             </tr>
             }
-
+        
         </tbody>
     </table>
 

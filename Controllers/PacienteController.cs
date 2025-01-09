@@ -1,5 +1,4 @@
 
-
 using System.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +21,9 @@ namespace Clinica.Controllers
 
         public IActionResult Index(int? pagina)
         {
-
-
-            var nome = "";
+        
+            
+            var nome = ""; 
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
@@ -57,7 +56,7 @@ namespace Clinica.Controllers
 
             if (string.IsNullOrEmpty(paciente.Nome))
             {
-                ModelState.AddModelError("", "O nome n„o pode ser vazio");
+                ModelState.AddModelError("", "O nome n√£o pode ser vazio");
             }
             if (string.IsNullOrEmpty(paciente.Endereco))
             {
@@ -77,7 +76,7 @@ namespace Clinica.Controllers
             }
             if (string.IsNullOrEmpty(paciente.Pais))
             {
-                ModelState.AddModelError("", "O paÌs deve ser informado");
+                ModelState.AddModelError("", "O pa√≠s deve ser informado");
             }
             if (string.IsNullOrEmpty(paciente.CEP))
             {
@@ -134,25 +133,22 @@ namespace Clinica.Controllers
                 new SqlParameter("@Identificacao", id)
             };
             var retorno = _context.ListarObjeto<RetornoProcedure>("sp_excluirPaciente", parametros);
-            return new JsonResult(new { Sucesso = retorno.Mensagem == "ExcluÌdo", Mensagem = retorno.Mensagem });
+            return new JsonResult(new { Sucesso = retorno.Mensagem == "Exclu√≠do", Mensagem = retorno.Mensagem });
         }
 
 
         public PartialViewResult ListaPartialView(string nome)
         {
-
+            
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@nome",  nome)
             };
             List<Models.Paciente> pacientes = _context.RetornarLista<Models.Paciente>("sp_consultarPaciente", parametros);
 
-            if (string.IsNullOrEmpty(nome))
-            {
+            if (string.IsNullOrEmpty(nome)){
                 HttpContext.Session.Remove("TextoPesquisa");
-            }
-            else
-            {
-                HttpContext.Session.SetString("TextoPesquisa", nome);
+            } else {
+            HttpContext.Session.SetString("TextoPesquisa", nome);
             }
 
             return PartialView(pacientes.ToPagedList(1, itensPorPagina));

@@ -1,27 +1,27 @@
 @model Medico
 @{
-    ViewData["Title"] = "Adicionar um novo Médico";
+    ViewData["Title"] = "Adicionar um novo MÃ©dico";
 }
 
 
 <div class="text-center">
-    <h4>
-        @if (Model.Id > 0)
+    <h4>@if (Model.Id > 0)
         {
-        @Html.Raw("Editar Médico");
+            @Html.Raw("Editar MÃ©dico");
         } else {
-        @Html.Raw("Incluir Médico");
+            @Html.Raw("Incluir MÃ©dico");
         }
-</h4>
+    </h4>
 </div>
 
 <form method="POST" asp-action="Detalhe" asp-controller="Medico" class="form p-5"
-      style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+    style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
     <div class="text-danger">@Html.ValidationSummary()</div>
 
     <div class="row">
         <div class="col-md-6">
             <input asp-for="Id" type="hidden" class="form-control">
+            <input asp-for="IdClinica" type="hidden">
             <label for="inputNome" class="form-label">Nome</label>
             <input asp-for="Nome" type="text" class="form-control">
         </div>
@@ -48,15 +48,15 @@
             <input asp-for="Email" type="text" class="form-control" placeholder="seuemail@email.com">
         </div>
         <div class="col-md-6">
-            <label for="inputEndereco" class="form-label">Endereço</label>
+            <label for="inputEndereco" class="form-label">EndereÃ§o</label>
             <input asp-for="Endereco" type="text" class="form-control" placeholder="Rua/Avenida">
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <label for="inputNumero" class="form-label">Nº</label>
-            <input asp-for="Numero" type="text" class="form-control" placeholder="nº">
+            <label for="inputNumero" class="form-label">NÂº</label>
+            <input asp-for="Numero" type="text" class="form-control" placeholder="nÂº">
         </div>
         <div class="col-md-6">
             <label for="inputComplemento" class="form-label">Complemento</label>
@@ -81,7 +81,7 @@
             <input asp-for="Estado" type="text" class="form-control">
         </div>
         <div class="col-md-6">
-            <label for="inputPais" class="form-label">País</label>
+            <label for="inputPais" class="form-label">PaÃ­s</label>
             <input asp-for="Pais" type="text" class="form-control">
         </div>
     </div>
@@ -99,24 +99,24 @@
 
     <div class="row">
         <div class="col-md-6">
-            <label for="inputEspecializacao" class="form-label">Especialização</label>
+            <label for="inputEspecializacao" class="form-label">EspecializaÃ§Ã£o</label>
             <input asp-for="Especializacao" type="text" class="form-control">
         </div>
         <div class="col-md-6">
             <label for="inputCRM" class="form-label">CRM</label>
             <input asp-for="CRM" type="text" class="form-control">
         </div>
-    </div>
+    </div>    
 
-    <input type="submit" value="Salvar" class="btn btn-success"
-           style="margin-top: 30px; margin-bottom: 15px;">
-    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
-           style="margin-top: 30px; margin-bottom: 15px;"></td>
+    <input type="submit" value="Salvar" class="btn btn-success" 
+        style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()" 
+        style="margin-top: 30px; margin-bottom: 15px;"></td>
 </form>
 
 <script>
     function Voltar(){
-        window.location.href = "http://localhost:5000/Medico";
+        window.location.href = "http://localhost:5210/Medico";
     }
 
     window.onload = function() {
