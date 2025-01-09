@@ -20,7 +20,7 @@ namespace Clinica.Controllers
 
         public IActionResult Index(int? pagina)
         {
-            
+
             var especializacao = "";
             int numeroPagina = (pagina ?? 1);
 
@@ -43,7 +43,7 @@ namespace Clinica.Controllers
             };
                 medico = _context.ListarObjeto<Models.Medico>("sp_buscarMedicoPorId", parametros);
             }
-            
+
             return View(medico);
         }
 
@@ -53,7 +53,7 @@ namespace Clinica.Controllers
 
             if (string.IsNullOrEmpty(medico.Nome))
             {
-                ModelState.AddModelError("", "O nome n√£o pode ser vazio");
+                ModelState.AddModelError("", "O nome n„o pode ser vazio");
             }
             if (string.IsNullOrEmpty(medico.Endereco))
             {
@@ -73,7 +73,7 @@ namespace Clinica.Controllers
             }
             if (string.IsNullOrEmpty(medico.Pais))
             {
-                ModelState.AddModelError("", "O pa√≠s deve ser informado");
+                ModelState.AddModelError("", "O paÌs deve ser informado");
             }
             if (string.IsNullOrEmpty(medico.CEP))
             {
@@ -85,7 +85,7 @@ namespace Clinica.Controllers
             }
             if (string.IsNullOrEmpty(medico.Especializacao))
             {
-                ModelState.AddModelError("", "A especializa√ß√£o deve ser informada");
+                ModelState.AddModelError("", "A especializaÁ„o deve ser informada");
             }
             if (string.IsNullOrEmpty(medico.CRM))
             {
@@ -140,12 +140,12 @@ namespace Clinica.Controllers
                 new SqlParameter("@Identificacao", id)
             };
             var retorno = _context.ListarObjeto<RetornoProcedure>("sp_excluirMedico", parametros);
-            return new JsonResult(new { Sucesso = retorno.Mensagem == "Exclu√≠do", Mensagem = retorno.Mensagem });
+            return new JsonResult(new { Sucesso = retorno.Mensagem == "ExcluÌdo", Mensagem = retorno.Mensagem });
         }
 
         public PartialViewResult ListaPartialView(string especializacao)
         {
-        
+
 
             SqlParameter[] parametros = new SqlParameter[]{
                 new SqlParameter("@especializacao", especializacao)

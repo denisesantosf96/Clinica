@@ -1,3 +1,4 @@
+
 @model Paciente
 @{
     ViewData["Title"] = "Adicionar um novo Paciente";
@@ -5,17 +6,18 @@
 
 
 <div class="text-center">
-    <h4>@if (Model.Id > 0)
+    <h4>
+        @if (Model.Id > 0)
         {
-            @Html.Raw("Editar Paciente");
+        @Html.Raw("Editar Paciente");
         } else {
-            @Html.Raw("Incluir Paciente");
+        @Html.Raw("Incluir Paciente");
         }
-    </h4>
+</h4>
 </div>
 
 <form method="POST" asp-action="Detalhe" asp-controller="Paciente" class="form p-5"
-    style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+      style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
     <div class="text-danger">@Html.ValidationSummary()</div>
 
     <div class="row">
@@ -47,15 +49,15 @@
             <input asp-for="Email" type="text" class="form-control" placeholder="seuemail@email.com">
         </div>
         <div class="col-md-6">
-            <label for="inputEndereco" class="form-label">EndereÃ§o</label>
+            <label for="inputEndereco" class="form-label">Endereço</label>
             <input asp-for="Endereco" type="text" class="form-control" placeholder="Rua/Avenida">
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <label for="inputNumero" class="form-label">NÂº</label>
-            <input asp-for="Numero" type="text" class="form-control" placeholder="nÂº">
+            <label for="inputNumero" class="form-label">Nº</label>
+            <input asp-for="Numero" type="text" class="form-control" placeholder="nº">
         </div>
         <div class="col-md-6">
             <label for="inputComplemento" class="form-label">Complemento</label>
@@ -80,7 +82,7 @@
             <input asp-for="Estado" type="text" class="form-control">
         </div>
         <div class="col-md-6">
-            <label for="inputPais" class="form-label">PaÃ­s</label>
+            <label for="inputPais" class="form-label">País</label>
             <input asp-for="Pais" type="text" class="form-control">
         </div>
     </div>
@@ -96,21 +98,21 @@
         </div>
     </div>
 
-    <input type="submit" value="Salvar" class="btn btn-success" 
-        style="margin-top: 30px; margin-bottom: 15px;">
-    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()" 
-        style="margin-top: 30px; margin-bottom: 15px;"></td>
+    <input type="submit" value="Salvar" class="btn btn-success"
+           style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+           style="margin-top: 30px; margin-bottom: 15px;"></td>
 </form>
 
 <script>
     function Voltar(){
-        window.location.href = "http://localhost:5210/Paciente";
+        window.location.href = "http://localhost:5000/Paciente";
     }
 
     window.onload = function() {
     $("#CEP").inputmask('99999-999');
     $("#DataNascimento").inputmask('99/99/9999');
     $("#CPF").inputmask('999.999.999-99');
-    $("#Telefone").inputmask('(99)99999-9999');   
+    $("#Telefone").inputmask('(99)99999-9999');
 }
 </script>
