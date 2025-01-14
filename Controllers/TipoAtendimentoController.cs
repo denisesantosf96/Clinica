@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,8 +20,16 @@ namespace Clinica.Controllers
 
         public IActionResult Index(int? pagina, string textopesquisa)
         {
+            // Verifica se há um valor salvo na sessão para "IdClinica". 
+            // Se não houver (ou seja, for nulo), define o valor padrão como 1.
+            if (HttpContext.Session.GetInt32("IdClinica") == null)
+            {
+                HttpContext.Session.SetInt32("IdClinica", 1);
+            }
 
-            int idClinica = 1;
+            // Obtém o valor de "IdClinica" da sessão. 
+            // Se o valor for nulo, utiliza o valor padrão 0 (através do operador de coalescência nula '??').
+            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
             int numeroPagina = (pagina ?? 1);
 
             SqlParameter[] parametros = new SqlParameter[]{
@@ -44,6 +52,7 @@ namespace Clinica.Controllers
         public IActionResult Detalhe(int id)
         {
             Models.TipoAtendimento atendimento = new Models.TipoAtendimento();
+            int idClinica = HttpContext.Session.GetInt32("IdClinica") ?? 0;
 
             if (id > 0)
             {
@@ -52,8 +61,14 @@ namespace Clinica.Controllers
             };
                 atendimento = _context.ListarObjeto<Models.TipoAtendimento>("sp_buscarTipoAtendimentoPorId", parametros);
             }
+            else
+            {
+                atendimento.IdClinica = idClinica;
+            }
 
             ViewBagClinicas();
+            ViewBagEspecialidades();
+            ViewBagMedicos();
             return View(atendimento);
         }
 
@@ -67,7 +82,6 @@ namespace Clinica.Controllers
 
             if (ModelState.IsValid)
             {
-
                 List<SqlParameter> parametros = new List<SqlParameter>(){
                     new SqlParameter("@IdClinica", atendimento.IdClinica),
                     new SqlParameter("@IdEspecialidade", atendimento.IdEspecialidade),
@@ -92,6 +106,9 @@ namespace Clinica.Controllers
             }
 
             ViewBagClinicas();
+            ViewBagEspecialidades();
+            ViewBagMedicos();
+
             return View(atendimento);
         }
 
@@ -119,7 +136,7 @@ namespace Clinica.Controllers
                     .ToList();
             }
 
-            HttpContext.Session.SetInt32("@IdClinica", idClinica);
+            HttpContext.Session.SetInt32("IdClinica", idClinica);
 
             return PartialView(atendimentos.ToPagedList(1, itensPorPagina));
         }
@@ -138,6 +155,38 @@ namespace Clinica.Controllers
                 Value = c.Id.ToString()
             }).ToList();
         }
-        
+
+        private void ViewBagMedicos()
+        {
+            SqlParameter[] param = new SqlParameter[]{
+                new SqlParameter("@especializacao", "")
+            };
+            List<Models.Medico> medicos = new List<Models.Medico>();
+
+            medicos = _context.RetornarLista<Models.Medico>("sp_consultarMedico", param);
+
+            ViewBag.Medicos = medicos.Select(c => new SelectListItem()
+            {
+                Text = c.Nome,
+                Value = c.Id.ToString()
+            }).ToList();
+        }
+
+        private void ViewBagEspecialidades()
+        {
+            SqlParameter[] param = new SqlParameter[]{
+                new SqlParameter("@nome", "")
+            };
+            List<Models.Especialidade> especialidades = new List<Models.Especialidade>();
+
+            especialidades = _context.RetornarLista<Models.Especialidade>("sp_consultarEspecialidade", param);
+
+            ViewBag.Especialidades = especialidades.Select(c => new SelectListItem()
+            {
+                Text = c.Nome,
+                Value = c.Id.ToString()
+            }).ToList();
+        }
+
     }
 }

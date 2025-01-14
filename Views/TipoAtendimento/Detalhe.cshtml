@@ -28,36 +28,46 @@
     <div class="text-danger">@Html.ValidationSummary()</div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <input asp-for="Id" type="hidden">
-            <input asp-for="IdClinica">
+            <input asp-for="IdClinica" type="hidden">
+            <label class="form-label">Clínica</label>
+            <select asp-items="@ViewBag.Clinicas" asp-for="IdClinica" class="form-control" disabled>
+                <option>Selecione uma Clínica</option>
+            </select>
+        </div>
+        <div class="col-md-6">
             <label class="form-label">Especialidade</label>
             <select asp-items="@ViewBag.Especialidades" asp-for="IdEspecialidade" class="form-control">
                 <option>Selecione uma Especialidade</option>
             </select>
+            
         </div>
-        <div class="col-md-4">
+    </div>
+
+    <div class="row">        
+        <div class="col-md-6">
             <label class="form-label">Médico</label>
             <select asp-items="@ViewBag.Medicos" asp-for="IdMedico" class="form-control">
                 <option>Selecione um(a) Médico(a)</option>
             </select>
         </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             <label for="inputDescricao" class="form-label">Descrição</label>
             <input asp-for="Descricao" type="text" class="form-control">
         </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-6">
             <label class="form-label">Valor</label>
             <input asp-for="Valor" type="text" class="form-control">
         </div>
     </div>
 
-    <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
-    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
-           style="margin-top: 30px; margin-bottom: 15px"></td>
+        <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
+        <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+               style="margin-top: 30px; margin-bottom: 15px"></td>
 </form>
 
 

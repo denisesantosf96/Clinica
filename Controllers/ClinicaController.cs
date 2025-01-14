@@ -1,5 +1,4 @@
-
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Clinica.Models;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList.Extensions;

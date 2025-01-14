@@ -9,7 +9,7 @@
 
     }
     <div class="text-center">
-        <h4>Consultas</h4>
+        <h4>Atendimentos</h4>
         <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
         <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
         <input type="button" value="Limpar" onclick="Limpar()" class="btn btn-primary">
