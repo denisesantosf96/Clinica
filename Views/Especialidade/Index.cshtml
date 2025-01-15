@@ -1,31 +1,37 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model X.PagedList.IPagedList<Especialidade>
+
 @{
     ViewData["Title"] = "Especialidades";
 }
+
 @section Scripts {
+
 }
+
 <div class="text-center">
     <h4>Especialidades</h4>
-    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
+        value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
     <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
     <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
     <a asp-area="" asp-controller="Especialidade" asp-action="Detalhe">
-        <input type="button" value="Novo"
-               class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
+        <input type="button" value="Novo" class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
     </a>
     <div id="divpartial">
         <partial name="~/Views/Especialidade/ListaPartialView.cshtml" />
     </div>
 </div>
+
 <script>
+
     function Limpar() {
         $('#textopesquisa').val('');
         Pesquisar();
     }
     //limpar textopesquisa ao recarregar a página
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("textopesquisa").value = "";
     });
     function Pesquisar() {
@@ -38,8 +44,8 @@
             });
     }
     function recarregarPagina() {
-            location.reload();
-        }
+        location.reload();
+    }
     document.getElementById("limpar").addEventListener("click", recarregarPagina);
     function VerificarDigitacao(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
@@ -62,4 +68,5 @@
                 });
         }
     }
+
 </script>

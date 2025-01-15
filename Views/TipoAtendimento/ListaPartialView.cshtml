@@ -1,6 +1,7 @@
 ﻿@model X.PagedList.IPagedList<TipoAtendimento>
-    @using X.PagedList.Mvc.Core;
-    @using X.PagedList.Web.Common;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -22,7 +23,8 @@
                 <td>@Model[i].Descricao</td>
                 <td>@Model[i].Valor</td>
                 <td>
-                    <input type="button" value="Editar" class="btn btn-dark" onclick="javascript:window.location=`/TipoAtendimento/Detalhe/${@Model[i].Id}`">
+                    <input type="button" value="Editar" class="btn btn-dark"
+                        onclick="javascript:window.location=`/TipoAtendimento/Detalhe/${@Model[i].Id}`">
                     <input type="button" value="Excluir" class="btn btn-danger" onclick="Excluir(@Model[i].Id)">
                 </td>
             </tr>

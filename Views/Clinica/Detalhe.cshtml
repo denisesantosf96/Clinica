@@ -1,4 +1,5 @@
 @model Clinica
+
 @{
     ViewData["Title"] = "Adicionar uma nova Clínica";
 }
@@ -7,9 +8,13 @@
 <div class="text-center">
     <h4>@if (Model.Id > 0)
         {
-            @Html.Raw("Editar Clínica");
-        } else {
-            @Html.Raw("Incluir Clínica");
+            @Html.Raw("Editar Clínica")
+            ;
+        }
+        else
+        {
+            @Html.Raw("Incluir Clínica")
+            ;
         }
     </h4>
 </div>
@@ -38,7 +43,8 @@
         </div>
         <div class="col-md-6">
             <label for="inputComplemento" class="form-label">Complemento</label>
-            <input asp-for="Complemento" type="text" class="form-control" placeholder="Apartamento,condomínio,sala,etc.(opcional)">
+            <input asp-for="Complemento" type="text" class="form-control"
+                placeholder="Apartamento,condomínio,sala,etc.(opcional)">
         </div>
     </div>
 
@@ -75,19 +81,20 @@
         </div>
     </div>
 
-    <input type="submit" value="Salvar" class="btn btn-success" 
-        style="margin-top: 30px; margin-bottom: 15px;">
-    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()" 
+    <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
         style="margin-top: 30px; margin-bottom: 15px;"></td>
 </form>
 
 <script>
-    function Voltar(){
+
+    function Voltar() {
         window.location.href = "http://localhost:5210/Clinica";
     }
-    
-    window.onload = function() {
-    $("#CEP").inputmask('99999-999');
-    $("#Telefone").inputmask('(99)99999-9999');
-}
+
+    window.onload = function () {
+        $("#CEP").inputmask('99999-999');
+        $("#Telefone").inputmask('(99)99999-9999');
+    }
+
 </script>

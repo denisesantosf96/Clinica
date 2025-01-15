@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="jQuery.InputMask" Version="5.0.9" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="10.5.7" />
     <PackageReference Include="X.PagedList.Web.Common" Version="8.0.7" />
   </ItemGroup>

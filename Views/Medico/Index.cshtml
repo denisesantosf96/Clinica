@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model X.PagedList.IPagedList<Medico>
+
 @{
     ViewData["Title"] = "Médicos";
 }
@@ -8,6 +9,7 @@
 @section Scripts {
 
 }
+
 <div class="text-center">
     <h4>Médicos</h4>
     <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
@@ -22,6 +24,7 @@
 </div>
 
 <script>
+
     function Limpar() {
         $('#textopesquisa').val('');
         Pesquisar();
@@ -73,4 +76,5 @@
                 });
         }
     }
+
 </script>

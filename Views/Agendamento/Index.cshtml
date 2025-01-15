@@ -1,9 +1,9 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@model X.PagedList.IPagedList<Paciente>
+@model X.PagedList.IPagedList<Agendamento>
 
 @{
-    ViewData["Title"] = "Pacientes";
+    ViewData["Title"] = "Agendamentos";
 }
 
 @section Scripts {
@@ -11,15 +11,17 @@
 }
 
 <div class="text-center">
-    <h4>Pacientes</h4>
+    <h4>Agendamentos</h4>
+    <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
     <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
         value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
-    <input type="button" id="limpar" value="Limpar" onclick="Limpar()" class="btn btn-primary">
+    <input type="button" value="Limpar" onclick="Limpar()" class="btn btn-primary">
     <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
-    <a asp-area="" asp-controller="Paciente" asp-action="Detalhe"><input type="button" value="Novo"
-            class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;"></a>
+    <a asp-area="" asp-controller="Agendamento" asp-action="Detalhe">
+        <input type="button" value="Novo" class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
+    </a>
     <div id="divpartial">
-        <partial name="~/Views/Paciente/ListaPartialView.cshtml" />
+        <partial name="~/Views/Agendamento/ListaPartialView.cshtml" />
     </div>
 </div>
 
@@ -38,8 +40,9 @@
 
     function Pesquisar() {
         var result = $('#textopesquisa').val();
-        var url = "/Paciente/ListaPartialView";
-        var parametros = { nome: result };
+        var idClinica = $('#idClinica').val();
+        var url = "/Agendamento/ListaPartialView";
+        var parametros = { pagina: 1, textopesquisa: result, idClinica: idClinica };
         $.get(url, parametros)
             .done(function (data) {
                 $('#divpartial').html(data);
@@ -62,7 +65,7 @@
     function Excluir(id) {
         var result = confirm("Tem certeza que quer excluir?");
         if (result) {
-            var url = "/Paciente/Excluir";
+            var url = "/Agendamento/Excluir";
             var parametros = { id: id };
             $.get(url, parametros)
                 .done(function (data) {

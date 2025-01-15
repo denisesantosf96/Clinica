@@ -1,4 +1,5 @@
 ﻿@model TipoAtendimento
+
 @{
     ViewData["Title"] = "Adicionar um novo Atendimento";
 }
@@ -24,7 +25,7 @@
 
 
 <form method="POST" asp-action="Detalhe" asp-controller="TipoAtendimento" class="form p-5"
-      style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+    style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
     <div class="text-danger">@Html.ValidationSummary()</div>
 
     <div class="row">
@@ -38,18 +39,19 @@
         </div>
         <div class="col-md-6">
             <label class="form-label">Especialidade</label>
-            <select asp-items="@ViewBag.Especialidades" asp-for="IdEspecialidade" class="form-control">
+            <select asp-items="@ViewBag.Especialidades" asp-for="IdEspecialidade" class="form-control"
+                id="especialidadeSelect">
                 <option>Selecione uma Especialidade</option>
             </select>
-            
+
         </div>
     </div>
 
-    <div class="row">        
+    <div class="row">
         <div class="col-md-6">
             <label class="form-label">Médico</label>
             <select asp-items="@ViewBag.Medicos" asp-for="IdMedico" class="form-control">
-                <option>Selecione um(a) Médico(a)</option>
+                <option value="">Selecione um(a) Médico(a)</option>
             </select>
         </div>
     </div>
@@ -65,20 +67,52 @@
         </div>
     </div>
 
-        <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
-        <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
-               style="margin-top: 30px; margin-bottom: 15px"></td>
+    <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+        style="margin-top: 30px; margin-bottom: 15px"></td>
 </form>
 
-
-
 <script>
-        function Voltar(){
-            window.location.href = "http://localhost:5210/TipoAtendimento";
-        }
 
-        window.onload = function() {
-        $("#CEP").inputmask('99999-999');
-        $("#Telefone").inputmask('(99)99999-9999');
+    function Voltar() {
+        window.location.href = "http://localhost:5210/TipoAtendimento";
     }
+
+    document.getElementById('especialidadeSelect').addEventListener('change', function () {
+        var especialidadeId = this.value;
+
+        // Verifica se foi selecionada uma especialidade
+        if (especialidadeId) {
+            // Faz a requisição AJAX para atualizar os médicos
+            $.ajax({
+                url: '@Url.Action("CarregarMedicos", "TipoAtendimento")',
+                data: { idEspecialidade: especialidadeId },
+                success: function (data) {
+                    // Atualiza o select de médicos com os dados retornados
+                    var medicoSelect = $('#IdMedico');
+                    medicoSelect.empty();
+                    medicoSelect.append('<option value="">Selecione um(a) Médico(a)</option>');
+                    data.forEach(function (medico) {
+                        medicoSelect.append('<option value="' + medico.value + '">' + medico.text + '</option>');
+                    });
+                },
+                error: function () {
+                    alert("Erro ao carregar médicos.");
+                }
+            });
+        }
+    });
+
+    // Adiciona validação ao clicar no botão de salvar
+    document.querySelector('form').addEventListener('submit', function (event) {
+        var descricao = document.querySelector('[name="Descricao"]').value;
+        var medico = document.querySelector('[name="IdMedico"]').value;
+        var especialidade = document.querySelector('[name="IdEspecialidade"]').value;
+
+        if (!descricao || !medico || !especialidade) {
+            event.preventDefault(); // Impede a submissão do formulário
+            alert("Por favor, preencha todos os campos obrigatórios.");
+        }
+    });
+
 </script>

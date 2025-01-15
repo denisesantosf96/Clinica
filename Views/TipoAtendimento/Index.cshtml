@@ -1,29 +1,31 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model X.PagedList.IPagedList<TipoAtendimento>
-    @{
+
+@{
     ViewData["Title"] = "Tipos de Atendimentos";
-    }
+}
 
-    @section Scripts{
+@section Scripts {
 
-    }
-    <div class="text-center">
-        <h4>Atendimentos</h4>
-        <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
-        <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)" value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
-        <input type="button" value="Limpar" onclick="Limpar()" class="btn btn-primary">
-        <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
-        <a asp-area="" asp-controller="TipoAtendimento" asp-action="Detalhe">
-            <input type="button" value="Novo"
-                   class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
-        </a>
-        <div id="divpartial">
-            <partial name="~/Views/TipoAtendimento/ListaPartialView.cshtml" />
-        </div>
+}
+
+<div class="text-center">
+    <h4>Atendimentos</h4>
+    <select id="idClinica" asp-items="@ViewBag.Clinicas" class="form-control" onchange="Pesquisar()"></select>
+    <input type="text" id="textopesquisa" class="form-control" onkeyup="VerificarDigitacao(event)"
+        value="@HttpContextAccessor.HttpContext.Session.GetString("TextoPesquisa")" placeholder="Pesquisar">
+    <input type="button" value="Limpar" onclick="Limpar()" class="btn btn-primary">
+    <input type="button" value="Pesquisar" onclick="Pesquisar()" class="btn btn-primary">
+    <a asp-area="" asp-controller="TipoAtendimento" asp-action="Detalhe">
+        <input type="button" value="Novo" class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;">
+    </a>
+    <div id="divpartial">
+        <partial name="~/Views/TipoAtendimento/ListaPartialView.cshtml" />
     </div>
+</div>
 
-    <script>
+<script>
 
     function Limpar() {
         $('#textopesquisa').val('');
@@ -32,7 +34,7 @@
     }
 
     //limpar textopesquisa ao recarregar a página
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("textopesquisa").value = "";
     });
 
@@ -40,7 +42,7 @@
         var result = $('#textopesquisa').val();
         var idClinica = $('#idClinica').val();
         var url = "/TipoAtendimento/ListaPartialView";
-        var parametros = { pagina: 1, textopesquisa: result, idClinica : idClinica };
+        var parametros = { pagina: 1, textopesquisa: result, idClinica: idClinica };
         $.get(url, parametros)
             .done(function (data) {
                 $('#divpartial').html(data);
@@ -48,8 +50,8 @@
     }
 
     function recarregarPagina() {
-            location.reload();
-        }
+        location.reload();
+    }
 
     document.getElementById("limpar").addEventListener("click", recarregarPagina);
 
@@ -77,4 +79,5 @@
                 });
         }
     }
-    </script>
+
+</script>

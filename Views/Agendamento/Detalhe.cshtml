@@ -1,0 +1,91 @@
+@model Agendamento
+
+@{
+    ViewData["Title"] = "Adicionar um novo Agendamento";
+}
+
+@section Scripts {
+
+}
+
+<div class="text-center">
+    <h4>
+        @if (Model.Id > 0)
+        {
+            @Html.Raw("Editar Agendamento")
+            ;
+        }
+        else
+        {
+            @Html.Raw("Incluir Agendamento")
+            ;
+        }
+    </h4>
+</div>
+
+
+<form method="POST" asp-action="Detalhe" asp-controller="Agendamento" class="form p-5"
+    style="border: 3px solid grey; background: #E6E6E6; border-radius: 15px; margin-top: 30px;">
+    <div class="text-danger">@Html.ValidationSummary()</div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <input asp-for="Id" type="hidden">
+            <input asp-for="IdClinica" type="hidden">
+            <label class="form-label">Clínica</label>
+            <select asp-items="@ViewBag.Clinicas" asp-for="IdClinica" class="form-control" disabled>
+                <option>Selecione uma Clínica</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Atendimento</label>
+            <select asp-items="@ViewBag.Atendimentos" asp-for="IdTipoAtendimento" class="form-control">
+                <option>Selecione um Atendimento</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Paciente</label>
+            <select asp-items="@ViewBag.Pacientes" asp-for="IdPaciente" class="form-control">
+                <option value="">Selecione um(a) Paciene</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="inputDataHora" class="form-label">Data</label>
+            <input asp-for="DataHora" type="datetime-local" class="form-control"
+                value="@Model.DataHora.ToString("yyyy-MM-ddTHH:mm")">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label for="inputDataHoraConfirmacao" class="form-label">Confirmação do Agendamento</label>
+            <input asp-for="DataHoraConfirmacao" type="datetime-local" class="form-control">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-check form-switch d-flex align-items-center mt-3"> <!-- Adicionei mt-3 aqui -->
+                <input asp-for="EstevePresente" type="checkbox" class="form-check-input" id="estevePresenteSwitch">
+                <label class="form-check-label ms-2" for="estevePresenteSwitch" style="font-weight: normal;">Compareceu
+                    no dia</label>
+            </div>
+        </div>
+    </div>
+
+    <input type="submit" value="Salvar" class="btn btn-success" style="margin-top: 30px; margin-bottom: 15px;">
+    <input type="button" value="Voltar" class="btn btn-success" onclick="Voltar()"
+        style="margin-top: 30px; margin-bottom: 15px"></td>
+</form>
+
+<script>
+
+    function Voltar() {
+        window.location.href = "http://localhost:5210/Agendamento";
+    }
+
+</script>
