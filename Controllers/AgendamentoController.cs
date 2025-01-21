@@ -151,8 +151,7 @@ namespace Clinica.Controllers
 
             return Json(medicosSelectList);
         }
-
-
+        
         private void ViewBagClinicas()
         {
             SqlParameter[] param = new SqlParameter[]{
