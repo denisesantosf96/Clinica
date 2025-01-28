@@ -5,11 +5,13 @@
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
+            <th>Código</th>
             <th>Paciente</th>
+
             <th>Especialidade</th>
             <th>Médico</th>
-            <th>Data</th>
+
+            <th>Data e Hora</em></th>
             <th></th>
         </tr>
     </thead>
@@ -21,7 +23,7 @@
                 <td>@Model[i].NomePaciente</td>
                 <td>@Model[i].NomeEspecialidade</td>
                 <td>@Model[i].NomeMedico</td>
-                <td>@Model[i].DataHora</td>
+                <td>@Model[i].DataHora.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     <input type="button" value="Editar" class="btn btn-dark"
                         onclick="javascript:window.location=`/Agendamento/Detalhe/${@Model[i].Id}`">

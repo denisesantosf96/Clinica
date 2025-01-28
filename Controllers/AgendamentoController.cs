@@ -64,7 +64,18 @@ namespace Clinica.Controllers
             else
             {
                 agendamento.IdClinica = idClinica;
+                agendamento.DataHora = DateTime.Now; // Data padrão para novos agendamentos
             }
+
+            // Popula ViewBag com horários disponíveis na data do agendamento
+            ViewBag.HorariosDisponiveis = ObterHorariosDisponiveis(agendamento.DataHora.Date)
+                .Select(horario => new SelectListItem
+                {
+                    Value = horario,
+                    Text = horario,
+                    Selected = agendamento.DataHora.ToString("HH:mm") == horario // Deixa o horário salvo selecionado
+                })
+                .ToList();
 
             ViewBagClinicas();
             ViewBagAtendimentos(agendamento.IdClinica);
@@ -73,10 +84,13 @@ namespace Clinica.Controllers
         }
 
         [HttpPost]
-        public IActionResult Detalhe(Models.Agendamento agendamento)
+        public IActionResult Detalhe(Models.Agendamento agendamento, string data, string horario)
         {
             if (ModelState.IsValid)
             {
+                // Combinar data e horário
+                agendamento.DataHora = DateTime.Parse($"{data} {horario}");
+
                 List<SqlParameter> parametros = new List<SqlParameter>(){
                     new SqlParameter("@IdTipoAtendimento", agendamento.IdTipoAtendimento),
                     new SqlParameter("@IdPaciente", agendamento.IdPaciente),
@@ -100,6 +114,7 @@ namespace Clinica.Controllers
                 }
             }
 
+            ViewBag.HorariosDisponiveis = ObterHorariosDisponiveis(agendamento.DataHora.Date);
             ViewBagClinicas();
             ViewBagAtendimentos(agendamento.IdClinica);
             ViewBagPacientes();
@@ -135,6 +150,38 @@ namespace Clinica.Controllers
             return PartialView(agendamentos.ToPagedList(1, itensPorPagina));
         }
 
+        [HttpGet]
+        public JsonResult GetHorariosDisponiveis(DateTime data)
+        {
+            // Lógica para buscar os horários disponíveis
+            var horariosDisponiveis = ObterHorariosDisponiveis(data);
+
+            return Json(horariosDisponiveis);
+        }
+
+        private List<string> ObterHorariosDisponiveis(DateTime data)
+        {
+            // Lista de horários fixos
+            var horarios = new List<string>
+            {
+                "08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00"
+            };
+
+            // Início e fim do dia
+            var inicioDoDia = data.Date;
+            var fimDoDia = data.Date.AddDays(1).AddTicks(-1);
+
+            // Filtrar os horários ocupados na tabela Agendamento
+            var horariosOcupados = _context.RetornarLista<Agendamento>("sp_consultarAgendamentos", new SqlParameter[]
+            {
+                new SqlParameter("@InicioDoDia", inicioDoDia),
+                new SqlParameter("@FimDoDia", fimDoDia)
+            }).Select(a => a.DataHora.ToString("HH:mm")).ToList();
+
+            // Retornar apenas os horários disponíveis
+            return horarios.Except(horariosOcupados).ToList();
+        }
+
         public JsonResult CarregarMedicos(int idEspecialidade)
         {
             SqlParameter[] param = new SqlParameter[] {
@@ -151,7 +198,7 @@ namespace Clinica.Controllers
 
             return Json(medicosSelectList);
         }
-        
+
         private void ViewBagClinicas()
         {
             SqlParameter[] param = new SqlParameter[]{
@@ -178,7 +225,7 @@ namespace Clinica.Controllers
 
             ViewBag.Atendimentos = atendimentos.Select(c => new SelectListItem()
             {
-                Text = c.Id + " - " + c.NomeEspecialidade + " - " + c.NomeMedico,
+                Text = c.NomeEspecialidade + " - " + c.NomeMedico,
                 Value = c.Id.ToString()
             }).ToList();
         }
@@ -194,7 +241,7 @@ namespace Clinica.Controllers
 
             ViewBag.Pacientes = pacientes.Select(c => new SelectListItem()
             {
-                Text = c.Id + " - " + c.Nome,
+                Text = c.Nome,
                 Value = c.Id.ToString()
             }).ToList();
         }

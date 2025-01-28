@@ -50,20 +50,39 @@
         <div class="col-md-6">
             <label class="form-label">Paciente</label>
             <select asp-items="@ViewBag.Pacientes" asp-for="IdPaciente" class="form-control">
-                <option value="">Selecione um(a) Paciene</option>
+                <option value="">Selecione um(a) Paciente</option>
             </select>
         </div>
         <div class="col-md-6">
             <label for="inputDataHora" class="form-label">Data</label>
-            <input asp-for="DataHora" type="datetime-local" class="form-control"
-                value="@Model.DataHora.ToString("yyyy-MM-ddTHH:mm")">
+            <input asp-for="DataHora" type="date" class="form-control" id="dataAgendamento" name="data"
+                value="@Model.DataHora.ToString("yyyy-MM-dd")">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label for="horariosDisponiveis" class="form-label">Horários Disponíveis</label>
+            <select id="horariosDisponiveis" class="form-control" name="horario">
+                @foreach (var item in (List<SelectListItem>)ViewBag.HorariosDisponiveis)
+                {
+                    if (item.Selected)
+                    {
+                        <option value="@item.Value" selected>@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
             <label for="inputDataHoraConfirmacao" class="form-label">Confirmação do Agendamento</label>
-            <input asp-for="DataHoraConfirmacao" type="datetime-local" class="form-control">
+            <input asp-for="DataHoraConfirmacao" type="date" class="form-control">
         </div>
     </div>
 
@@ -87,5 +106,30 @@
     function Voltar() {
         window.location.href = "http://localhost:5210/Agendamento";
     }
+
+    document.getElementById("horariosDisponiveis").addEventListener("change", function () {
+        const horarioSelecionado = this.value; // Obtém o horário selecionado
+
+        if (horarioSelecionado) {
+            // Remove o horário selecionado da lista de opções
+            const dropdown = document.getElementById("horariosDisponiveis");
+            const opcoes = Array.from(dropdown.options);
+
+            // Filtra a lista para excluir o horário selecionado
+            dropdown.innerHTML = ""; // Limpa o dropdown
+            opcoes.forEach(option => {
+                if (option.value !== horarioSelecionado) {
+                    dropdown.appendChild(option);
+                }
+            });
+
+            // Reinsere a opção selecionada para manter o estado visual
+            const optionSelecionada = document.createElement("option");
+            optionSelecionada.value = horarioSelecionado;
+            optionSelecionada.textContent = horarioSelecionado;
+            optionSelecionada.selected = true; // Deixa selecionado
+            dropdown.appendChild(optionSelecionada);
+        }
+    });
 
 </script>

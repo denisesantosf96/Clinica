@@ -5,12 +5,10 @@
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
             <th>Nome</th>
-
             <th>Cidade</th>
-            <th>Telefone</th>
 
+            <th>Telefone</th>
             <th></th>
         </tr>
     </thead>
@@ -18,7 +16,6 @@
         @for (int i = 0; i < Model.Count; i++)
         {
             <tr>
-                <td>@Model[i].Id</td>
                 <td>@Model[i].Nome</td>
                 <td>@Model[i].Cidade</td>
                 <td>@Model[i].Telefone</td>

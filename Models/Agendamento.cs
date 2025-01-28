@@ -6,11 +6,11 @@ namespace Clinica.Models
         public int IdTipoAtendimento { get; set; }
         public int IdPaciente { get; set; }
         public DateTime DataHora { get; set; } = DateTime.Now;
-        public DateTime? DataHoraConfirmacao { get; set; }
+        public DateTime? DataHoraConfirmacao { get; set; } 
         public bool EstevePresente { get; set; }
         public int IdClinica { get; set; }
         public string? NomePaciente { get; set; }
         public string? NomeEspecialidade { get; set; }
         public string? NomeMedico { get; set; }
     }
-}
+} 
