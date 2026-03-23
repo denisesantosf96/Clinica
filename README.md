@@ -29,8 +29,15 @@ O objetivo é facilitar a organização dos atendimentos e centralizar as inform
 
 <img width="1911" height="910" alt="image" src="https://github.com/user-attachments/assets/2fae2682-2510-4b4f-87aa-c8d98c16a269" />
 
+<img width="1908" height="909" alt="image" src="https://github.com/user-attachments/assets/22a1df42-cf2c-48f3-a85c-a54e062e8dff" />
 
+<img width="1911" height="911" alt="image" src="https://github.com/user-attachments/assets/ccde006a-9b2e-4bd9-bd39-e9c0e58958f8" />
 
+<img width="1907" height="911" alt="image" src="https://github.com/user-attachments/assets/767dc686-bd55-41cd-aca8-c8ffb7040d3e" />
+
+<img width="1907" height="910" alt="image" src="https://github.com/user-attachments/assets/da9afda0-0252-4704-a3df-d79f031d8854" />
+
+<img width="1905" height="911" alt="image" src="https://github.com/user-attachments/assets/307fbc38-be7d-4a0f-a9ad-290af945019b" />
 
 ## 📚 Aprendizados
 - Estrutura MVC
