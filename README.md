@@ -27,6 +27,9 @@ O objetivo é facilitar a organização dos atendimentos e centralizar as inform
 
 ## 📷 Screenshots
 
+<img width="1906" height="913" alt="image" src="https://github.com/user-attachments/assets/e70e27e2-5007-46ea-b632-c752166aad67" />
+
+
 
 ## 📚 Aprendizados
 - Estrutura MVC
