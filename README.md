@@ -8,9 +8,9 @@ O objetivo é facilitar a organização dos atendimentos e centralizar as inform
 ## 🚀 Tecnologias
 - C#
 - ASP.NET Core
-- SQL Server / PostgreSQL
+- SQL Server
 - Entity Framework Core
-- HTML, CSS, Bootstrap
+- HTML, CSS, JavaScript, Bootstrap
 
 ## ⚙️ Como rodar o projeto
 1. Clonar o repositório
