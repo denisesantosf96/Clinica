@@ -26,7 +26,7 @@ O objetivo é facilitar a organização dos atendimentos e centralizar as inform
 - Validações de dados
 
 ## 📷 Screenshots
-(cole prints aqui)
+
 
 ## 📚 Aprendizados
 - Estrutura MVC
